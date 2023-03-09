@@ -49,7 +49,7 @@ public class UserMealsUtil {
             }
         }
         for (UserMeal meal : meals) {
-            if (timeFrames(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+            if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
                 result.add(new UserMealWithExcess(meal, dateExc.get(meal.getDateTime().getDayOfMonth())));
             }
         }
@@ -64,18 +64,10 @@ public class UserMealsUtil {
                 ? dateCol.put(meal.getDateTime().getDayOfMonth(), meal.getCalories())
                 : dateCol.merge(meal.getDateTime().getDayOfMonth(), dateCol.get(meal.getDateTime().getDayOfMonth()), (a, b) -> dateCol.get(meal.getDateTime().getDayOfMonth()) + meal.getCalories()));
         dateCol.entrySet().stream().map(day -> (day.getValue() > caloriesPerDay) ? dateExc.put(day.getKey(), true) : dateExc.put(day.getKey(), false));
-        meals.stream().map(meal -> (timeFrames(meal.getDateTime().toLocalTime(), startTime, endTime))
+        meals.stream().map(meal -> (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime))
                 ? result.add(new UserMealWithExcess(meal, dateExc.get(meal.getDateTime().getDayOfMonth())))
                 : null);
         return result;
-    }
-
-    private static Boolean timeFrames(LocalTime time, LocalTime startTime, LocalTime endTime) {
-        if (time.getHour() >= startTime.getHour() && time.getHour() <= endTime.getHour()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }
 
