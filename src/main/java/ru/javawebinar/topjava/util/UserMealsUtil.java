@@ -25,17 +25,15 @@ public class UserMealsUtil {
         List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
 
-//        List<UserMealWithExcess> mealsWithExcess = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-//        mealsWithExcess.forEach(System.out::println);
+        List<UserMealWithExcess> mealsWithExcess = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        mealsWithExcess.forEach(System.out::println);
 
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> sumCaloriesPerDay = new HashMap<>();
         for (UserMeal meal : meals) {
-            LocalDate mealDate = meal.getDateTime().toLocalDate();
-            int calories = meal.getCalories();
-            sumCaloriesPerDay.merge(mealDate, calories, Integer::sum);
+            sumCaloriesPerDay.merge(meal.getDateTime().toLocalDate(), meal.getCalories(), Integer::sum);
         }
         List<UserMealWithExcess> result = new ArrayList<>();
         for (UserMeal meal : meals) {
@@ -47,12 +45,17 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, List<UserMeal>> sumCaloriesPerDay = meals.stream().collect(Collectors.groupingBy(meal -> meal.getDateTime().toLocalDate()));
-        return null;
+        Map<LocalDate, Integer> sumCaloriesPerDay = meals.stream()
+                .collect(Collectors.groupingBy(userMeal -> userMeal.getDateTime().toLocalDate(), Collectors.summingInt(UserMeal::getCalories)));
+        List<UserMealWithExcess> result = meals.stream()
+                .map(meal -> convertToUserMealWithExcess(meal, sumCaloriesPerDay.get(meal.getDateTime().toLocalDate()) > caloriesPerDay))
+                .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime))
+                .collect(Collectors.toList());
+        return result;
     }
 
-    public static UserMealWithExcess convertToUserMealWithExcess(UserMeal userMeal, Boolean check) {
-        return new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), check);
+    public static UserMealWithExcess convertToUserMealWithExcess(UserMeal userMeal, boolean excess) {
+        return new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), excess);
     }
 }
 
