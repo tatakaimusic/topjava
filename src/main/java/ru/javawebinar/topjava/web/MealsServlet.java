@@ -24,12 +24,13 @@ public class MealsServlet extends HttpServlet {
 
     private static MealsStorage storage;
 
+    private static List<Meal> meals;
+
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         storage = MealsUtil.STORAGE;
+        meals = storage.getAll();
     }
-
-    private static final List<Meal> meals = storage.getAll();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -83,7 +84,7 @@ public class MealsServlet extends HttpServlet {
             exist = false;
             uuid = UUID.randomUUID().toString();
         }
-        meal = new Meal(uuid, LocalDateTime.parse(date, MealsServlet.formatter), description, Integer.parseInt(calories));
+        meal = new Meal(uuid, LocalDateTime.parse(date, DateTimeFormatter.ISO_LOCAL_DATE_TIME), description, Integer.parseInt(calories));
         if (exist) {
             storage.update(meal);
         } else {

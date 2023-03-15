@@ -23,9 +23,18 @@
         <input type="hidden" name="uuid" value="${meal.uuid}">
         <dl>
             <dt>Date:</dt>
-            <dd><input type="datetime-local" name="date" size="30"
-                       value="<%=MealsServlet.formatter.format(LocalDateTime.now())%>"
-                       placeholder="yyyy-MM-dd HH:mm" required></dd>
+            <c:choose>
+                <c:when test="${exist}">
+                    <dd><input type="datetime-local" name="date" size="30"
+                               value="<%=MealsServlet.formatter.format(meal.getDateTime())%>"
+                               placeholder="yyyy-MM-dd HH:mm" required></dd>
+                </c:when>
+                <c:otherwise>
+                    <dd><input type="datetime-local" name="date" size="30"
+                               value="<%=MealsServlet.formatter.format(LocalDateTime.now())%>"
+                               placeholder="yyyy-MM-dd HH:mm" required></dd>
+                </c:otherwise>
+            </c:choose>
         </dl>
         <dl>
             <dt>Description</dt>

@@ -4,9 +4,7 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MemoryStorage implements MealsStorage {
     private List<Meal> storage = new ArrayList<>();
@@ -38,16 +36,16 @@ public class MemoryStorage implements MealsStorage {
     }
 
     public void delete(String uuid) {
-        storage.remove(getIndex(uuid));
+        storage.remove(Objects.requireNonNull(getIndex(uuid)).intValue());
     }
 
     public Meal update(Meal meal) {
-        storage.set(getIndex(meal.getUuid()), meal);
+        storage.set(Objects.requireNonNull(getIndex(meal.getUuid())), meal);
         return meal;
     }
 
     public Meal get(String uuid) {
-        return storage.get(getIndex(uuid));
+        return storage.get(Objects.requireNonNull(getIndex(uuid)).intValue());
     }
 
     public List<Meal> getAll() {
