@@ -1,4 +1,4 @@
-<%@ page import="ru.javawebinar.topjava.model.Meal" %>
+<%@ page import="ru.javawebinar.topjava.web.MealsServlet" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -8,6 +8,7 @@
 <body>
 <section>
     <div class="button-wrapper">
+        <h2>Meals</h2>
         <button onclick="location.href='meals?action=save'" type="button">
             New meal
         </button>
@@ -29,7 +30,7 @@
             <c:if test="${meal.excess == false}">
                 <tr bgcolor="#7fff00">
             </c:if>
-            <td><a href="meals?uuid=${meal.uuid}&action=view"><%=Meal.formatter.format(meal.getDateTime())%>
+            <td><a href="meals?uuid=${meal.uuid}&action=view"><%=MealsServlet.formatter.format(meal.getDateTime())%>
             </a></td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
@@ -38,12 +39,6 @@
             </tr>
         </c:forEach>
     </table>
-    <jsp:useBean id="size" type="java.lang.Integer" scope="request"/>
-    <p>Всего: ${size}</p>
-    <br/>
-    <div>
-        <button onclick="location.href='meals?action=clear'" type="button">Clear</button>
-    </div>
 </section>
 </body>
 </html>

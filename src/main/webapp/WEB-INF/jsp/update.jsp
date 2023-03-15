@@ -1,20 +1,31 @@
-<%@ page import="ru.javawebinar.topjava.model.Meal" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="ru.javawebinar.topjava.web.MealsServlet" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
+    <jsp:useBean id="exist" type="java.lang.Boolean" scope="request"/>
     <title>Title</title>
 </head>
 <body>
 <section>
-    <h2>Edit meal</h2>
+    <c:choose>
+        <c:when test="${exist}">
+            <h2>Edit meal</h2>
+        </c:when>
+        <c:otherwise>
+            <h2>Add meal</h2>
+        </c:otherwise>
+    </c:choose>
     <br/>
     <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="uuid" value="${meal.uuid}">
         <dl>
             <dt>Date:</dt>
-            <dd><input type="text" name="date" size="30" value="<%=Meal.formatter.format(meal.getDateTime())%>"
-                       placeholder="yyyy-MM-dd HH:mm:ss" required></dd>
+            <dd><input type="datetime-local" name="date" size="30"
+                       value="<%=MealsServlet.formatter.format(LocalDateTime.now())%>"
+                       placeholder="yyyy-MM-dd HH:mm" required></dd>
         </dl>
         <dl>
             <dt>Description</dt>
@@ -22,7 +33,8 @@
         </dl>
         <dl>
             <dt>Calories</dt>
-            <dd><input type="text" name="calories" size="30" value="${meal.calories}"></dd>
+            <dd><input type="text" name="calories" size="30" value="${meal.calories}" pattern="^[ 0-9]+$"
+                       placeholder="любое число"></dd>
         </dl>
         <button type="submit">Save</button>
         <button type="reset" onclick="window.history.back()">Cancel</button>

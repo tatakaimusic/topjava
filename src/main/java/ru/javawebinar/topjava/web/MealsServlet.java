@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.storage.ListStorage;
+import ru.javawebinar.topjava.storage.MealsStorage;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -9,21 +9,27 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealsServlet extends HttpServlet {
-    private static final Logger log = getLogger(UserServlet.class);
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    private static final Logger log = getLogger(MealsServlet.class);
 
     private static final int CALORIES_PER_DAY = 2000;
 
-    private static ListStorage storage;
+    private static MealsStorage storage;
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         storage = MealsUtil.STORAGE;
     }
+
+    private static final List<Meal> meals = storage.getAll();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,8 +38,7 @@ public class MealsServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action == null) {
             log.debug("redirect to meals");
-            request.setAttribute("meals", MealsUtil.filteredByStreams(storage.getAll(), CALORIES_PER_DAY));
-            request.setAttribute("size", storage.size());
+            request.setAttribute("meals", MealsUtil.filteredByStreams(meals, CALORIES_PER_DAY));
             request.getRequestDispatcher("WEB-INF/jsp/meals.jsp").forward(request, response);
             return;
         }
@@ -44,24 +49,24 @@ public class MealsServlet extends HttpServlet {
                 storage.delete(uuid);
                 response.sendRedirect("meals");
                 return;
-            case "clear":
-                storage.clear();
-                response.sendRedirect("meals");
-                return;
             case "view":
                 log.debug("view meal " + uuid);
+                meal = storage.get(uuid);
+                break;
             case "update":
                 log.debug("update meal " + uuid);
                 meal = storage.get(uuid);
                 break;
             case "save":
-                log.debug("save meal");
-                meal = Meal.EMPTY;
+                log.debug("create meal");
+                meal = new Meal();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + action);
         }
         request.setAttribute("meal", meal);
+        boolean exist = meal.getUuid() != null && meal.getUuid().length() != 0;
+        request.setAttribute("exist", exist);
         request.getRequestDispatcher("view".equals(action) ? "WEB-INF/jsp/view.jsp" : "WEB-INF/jsp/update.jsp").forward(request, response);
     }
 
@@ -78,11 +83,11 @@ public class MealsServlet extends HttpServlet {
             exist = false;
             uuid = UUID.randomUUID().toString();
         }
-        meal = new Meal(uuid, LocalDateTime.parse(date, Meal.formatter), description, Integer.parseInt(calories));
+        meal = new Meal(uuid, LocalDateTime.parse(date, MealsServlet.formatter), description, Integer.parseInt(calories));
         if (exist) {
             storage.update(meal);
         } else {
-            storage.save(meal);
+            storage.create(meal);
         }
         response.sendRedirect("meals");
     }

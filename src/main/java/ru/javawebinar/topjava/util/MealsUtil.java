@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.util;
 
-import ru.javawebinar.topjava.storage.ListStorage;
+import ru.javawebinar.topjava.storage.MealsStorage;
+import ru.javawebinar.topjava.storage.MemoryStorage;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
-    public static final ListStorage STORAGE = new ListStorage();
+    public static final MealsStorage STORAGE = new MemoryStorage();
 
     public static void main(String[] args) {
         List<Meal> meals = Arrays.asList(

@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ListStorage implements Storage {
+public class MemoryStorage implements MealsStorage {
     private List<Meal> storage = new ArrayList<>();
 
-    public ListStorage() {
+    public MemoryStorage() {
         storage.addAll(Arrays.asList(
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
                 new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
@@ -32,31 +32,25 @@ public class ListStorage implements Storage {
         return null;
     }
 
-    public void save(Meal meal) {
+    public Meal create(Meal meal) {
         storage.add(meal);
+        return meal;
     }
 
     public void delete(String uuid) {
-        storage.remove(getIndex(uuid).intValue());
+        storage.remove(getIndex(uuid));
     }
 
-    public void update(Meal meal) {
-        storage.set(getIndex(meal.getUuid()).intValue(), meal);
+    public Meal update(Meal meal) {
+        storage.set(getIndex(meal.getUuid()), meal);
+        return meal;
     }
 
     public Meal get(String uuid) {
-        return storage.get(getIndex(uuid).intValue());
+        return storage.get(getIndex(uuid));
     }
 
     public List<Meal> getAll() {
         return storage;
-    }
-
-    public void clear() {
-        storage.clear();
-    }
-
-    public int size() {
-        return storage.size();
     }
 }

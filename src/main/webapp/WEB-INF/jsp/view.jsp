@@ -1,4 +1,4 @@
-<%@ page import="ru.javawebinar.topjava.model.Meal" %>
+<%@ page import="ru.javawebinar.topjava.web.MealsServlet" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -10,7 +10,7 @@
 <section>
     <h2>Meal</h2>
     <br/>
-    <p>Date: <%=Meal.formatter.format(meal.getDateTime())%>
+    <p>Date: <%=MealsServlet.formatter.format(meal.getDateTime())%>
     </p>
     <p>Description: ${meal.description}</p>
     <p>Calories: ${meal.calories}</p>
