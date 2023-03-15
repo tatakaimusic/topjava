@@ -7,7 +7,7 @@ import java.time.Month;
 import java.util.*;
 
 public class MemoryStorage implements MealsStorage {
-    private Map<String, Meal> storage = Collections.synchronizedMap(new LinkedHashMap<>());
+    private final Map<String, Meal> storage = Collections.synchronizedMap(new LinkedHashMap<>());
 
     public MemoryStorage() {
 //        storage.addAll(Arrays.asList(

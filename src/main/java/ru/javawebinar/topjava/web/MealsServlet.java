@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.storage.MealsStorage;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.storage.MemoryStorage;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.*;
@@ -28,7 +29,7 @@ public class MealsServlet extends HttpServlet {
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        storage = MealsUtil.STORAGE;
+        storage = new MemoryStorage();
         meals = storage.getAll();
     }
 
