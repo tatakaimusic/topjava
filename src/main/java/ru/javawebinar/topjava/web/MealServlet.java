@@ -48,11 +48,11 @@ public class MealServlet extends HttpServlet {
                 response.sendRedirect("meals");
                 return;
             case "view":
-                log.debug("view meal {}", id);
+                log.debug("view meal with id {}", id);
                 meal = storage.get(Integer.valueOf(id));
                 break;
             case "update":
-                log.debug("update meal {}", id);
+                log.debug("update meal with id {}", id);
                 meal = storage.get(Integer.valueOf(id));
                 break;
             case "save":
@@ -79,8 +79,10 @@ public class MealServlet extends HttpServlet {
         if (exist) {
             meal.setId(Integer.parseInt(id));
             storage.update(meal);
+            log.debug("update meal with id {} completed", id);
         } else {
             storage.create(meal);
+            log.debug("create meal with id {} completed", meal.getId());
         }
         response.sendRedirect("meals");
     }
