@@ -27,13 +27,6 @@ public class Meal {
         this.calories = 0;
     }
 
-//    public Meal(Integer id, LocalDateTime dateTime, String description, int calories) {
-//        this.id = id;
-//        this.dateTime = dateTime;
-//        this.description = description;
-//        this.calories = calories;
-//    }
-
     public Integer getId() {
         return id;
     }
