@@ -20,7 +20,7 @@
     </c:choose>
     <br/>
     <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
-        <input type="hidden" name="uuid" value="${meal.uuid}">
+        <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt>Date:</dt>
             <c:choose>
