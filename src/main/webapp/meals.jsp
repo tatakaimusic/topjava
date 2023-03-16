@@ -1,8 +1,8 @@
-<%@ page import="ru.javawebinar.topjava.web.MealsServlet" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
+    <jsp:useBean id="FORMATTER" scope="request" type="java.time.format.DateTimeFormatter"/>
     <title>Meals</title>
 </head>
 <body>
@@ -32,7 +32,7 @@
                     <tr bgcolor="#7fff00">
                 </c:otherwise>
             </c:choose>
-            <td><a href="meals?id=${meal.id}&action=view">${MealsServlet.formatter.format(meal.dateTime)}
+            <td><a href="meals?id=${meal.id}&action=view">${FORMATTER.format(meal.dateTime)}
             </a></td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>

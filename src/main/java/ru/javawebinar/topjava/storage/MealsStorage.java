@@ -14,7 +14,4 @@ public interface MealsStorage {
     Meal get(Integer id);
 
     List<Meal> getAll();
-
-    int size();
-
 }
