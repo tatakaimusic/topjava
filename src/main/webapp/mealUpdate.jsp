@@ -8,14 +8,7 @@
 </head>
 <body>
 <section>
-    <c:choose>
-        <c:when test="${meal.id != null}">
-            <h2>Edit meal</h2>
-        </c:when>
-        <c:otherwise>
-            <h2>Add meal</h2>
-        </c:otherwise>
-    </c:choose>
+    <h2><c:out value="${meal.id != null ? 'Edit meal' : 'Add meal'}"/></h2>
     <br/>
     <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="id" value="${meal.id}">

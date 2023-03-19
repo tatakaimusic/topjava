@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.storage.MealsStorage;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.MemoryStorage;
+import ru.javawebinar.topjava.storage.MealMemoryStorage;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.*;
@@ -11,7 +11,7 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
+import java.time.temporal.ChronoUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -26,7 +26,7 @@ public class MealServlet extends HttpServlet {
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        storage = new MemoryStorage();
+        storage = new MealMemoryStorage();
     }
 
     @Override
@@ -57,10 +57,10 @@ public class MealServlet extends HttpServlet {
                 break;
             case "save":
                 log.debug("create meal");
-                meal = new Meal(LocalDateTime.now().withSecond(0));
+                meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
                 break;
             default:
-                request.getRequestDispatcher("meals.jsp").forward(request, response);
+                response.sendRedirect("meals");
                 return;
         }
         request.setAttribute("meal", meal);
@@ -74,7 +74,7 @@ public class MealServlet extends HttpServlet {
         LocalDateTime date = LocalDateTime.parse(request.getParameter("date"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        boolean exist = !Objects.equals(id, "");
+        boolean exist = !id.isEmpty();
         Meal meal = new Meal(date, description, calories);
         if (exist) {
             meal.setId(Integer.parseInt(id));

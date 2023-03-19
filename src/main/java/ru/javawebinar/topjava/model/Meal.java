@@ -21,10 +21,7 @@ public class Meal {
     }
 
     public Meal(LocalDateTime dateTime) {
-        this.id = null;
-        this.dateTime = dateTime;
-        this.description = "";
-        this.calories = 0;
+        this(dateTime, "", 0);
     }
 
     public Integer getId() {
