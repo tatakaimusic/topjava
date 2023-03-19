@@ -40,14 +40,7 @@ public class MemoryMealStorage implements MealsStorage {
     }
 
     public Meal update(Meal meal) {
-        int id = meal.getId();
-//        if (storage.get(id) != null) {
-//            storage.put(id, meal);
-//            return meal;
-//        }
-//        return null;
-        storage.computeIfPresent(meal.getId(), (k, v) -> meal);
-        return meal;
+        return storage.computeIfPresent(meal.getId(), (k, v) -> meal);
     }
 
     public Meal get(int id) {
