@@ -15,7 +15,7 @@
         <dl>
             <dt>Date:</dt>
             <dd><input type="datetime-local" name="date" size="30"
-                       value="${FORMATTER.format(meal.dateTime)}"
+                       value="${meal.dateTime}"
                        placeholder="yyyy-MM-dd HH:mm" required></dd>
 
         </dl>

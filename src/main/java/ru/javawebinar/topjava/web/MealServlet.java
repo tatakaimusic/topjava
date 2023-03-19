@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.storage.MealsStorage;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.MealMemoryStorage;
+import ru.javawebinar.topjava.storage.MemoryMealStorage;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.*;
@@ -26,16 +26,16 @@ public class MealServlet extends HttpServlet {
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        storage = new MealMemoryStorage();
+        storage = new MemoryMealStorage();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        request.setAttribute("FORMATTER", FORMATTER);
         if (action == null) {
             log.debug("redirect to meals");
             request.setAttribute("meals", MealsUtil.filteredByStreams(storage.getAll(), CALORIES_PER_DAY));
+            request.setAttribute("FORMATTER", FORMATTER);
             request.getRequestDispatcher("meals.jsp").forward(request, response);
             return;
         }
@@ -64,6 +64,7 @@ public class MealServlet extends HttpServlet {
                 return;
         }
         request.setAttribute("meal", meal);
+        request.setAttribute("FORMATTER", FORMATTER);
         request.getRequestDispatcher("view".equals(action) ? "mealView.jsp" : "mealUpdate.jsp").forward(request, response);
     }
 
