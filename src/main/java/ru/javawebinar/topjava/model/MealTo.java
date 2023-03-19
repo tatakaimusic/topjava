@@ -47,7 +47,7 @@ public class MealTo {
         return dateTime;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 }
