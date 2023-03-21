@@ -35,4 +35,8 @@ public class MealService {
     public List<Meal> getAll(int userId) {
         return (List<Meal>) repository.getAll(userId);
     }
+
+    public MealRepository getRepository() {
+        return repository;
+    }
 }

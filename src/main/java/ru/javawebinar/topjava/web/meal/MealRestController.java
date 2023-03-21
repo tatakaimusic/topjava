@@ -47,4 +47,8 @@ public class MealRestController {
         log.info("get all where userId={}", userId);
         return service.getAll(userId);
     }
+
+    public MealService getService() {
+        return service;
+    }
 }
