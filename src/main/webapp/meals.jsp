@@ -21,6 +21,21 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+    <form method="get" action="meals">
+        <input type="hidden" name="action" value="sort">
+        <dl>
+            <dt>From date (inclusive)</dt>
+            <dd><input type="time" name="fromTime"></dd>
+        </dl>
+        <dl>
+            <dt>To date (inclusive)</dt>
+            <dd><input type="time" name="toTime"></dd>
+        </dl>
+        <button type="submit">Filter</button>
+        <form action="meals">
+            <button type="reset">Cancel</button>
+        </form>
+    </form>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
