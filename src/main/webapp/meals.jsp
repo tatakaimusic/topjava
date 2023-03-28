@@ -31,6 +31,14 @@
             <dt>To time (inclusive)</dt>
             <dd><input type="time" name="toTime"></dd>
         </dl>
+        <dl>
+            <dt>From date (inclusive)</dt>
+            <dd><input type="date" name="fromDate"></dd>
+        </dl>
+        <dl>
+            <dt>To date (inclusive)</dt>
+            <dd><input type="date" name="toDate"></dd>
+        </dl>
         <button type="submit">Filter</button>
         <form action="meals">
             <button type="reset">Cancel</button>

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
@@ -12,9 +13,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
@@ -78,9 +81,17 @@ public class MealServlet extends HttpServlet {
                 log.info("get all sorted by time");
                 String fromTimeString = request.getParameter("fromTime");
                 String toTimeString = request.getParameter("toTime");
+
                 LocalTime fromTime = fromTimeString.equals("") ? LocalTime.MIN : LocalTime.parse(fromTimeString);
                 LocalTime toTime = toTimeString.equals("") ? LocalTime.MAX : LocalTime.parse(toTimeString);
-                request.setAttribute("meals", controller.getAllFiltered(fromTime, toTime));
+
+                String fromDateString = request.getParameter("fromDate");
+                String toDateString = request.getParameter("toDate");
+
+                List<MealTo> meals = controller.getAll();
+                LocalDate fromDate = fromDateString.equals("") ? meals.get(0).getDateTime().toLocalDate() : LocalDate.parse(fromDateString);
+                LocalDate toDate = toDateString.equals("") ? meals.get(meals.size() - 1).getDateTime().toLocalDate() : LocalDate.parse(toDateString);
+                request.setAttribute("meals", controller.getAllFiltered(fromDate, toDate, fromTime, toTime));
                 request.getRequestDispatcher("meals.jsp").forward(request, response);
                 break;
             case "all":
