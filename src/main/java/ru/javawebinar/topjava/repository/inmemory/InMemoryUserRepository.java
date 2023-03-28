@@ -55,7 +55,10 @@ public class InMemoryUserRepository implements UserRepository {
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
         List<User> users = repository.values().stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
-        return users.get(0);
+        if (!users.isEmpty()) {
+            return users.get(0);
+        }
+        return null;
         //Немного кривое решение, но я подумал, раз email уникален, то можно сделать так.
     }
 }
