@@ -7,11 +7,10 @@ import ru.javawebinar.topjava.model.AbstractNamedEntity;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
@@ -25,7 +24,6 @@ public class InMemoryUserRepository implements UserRepository {
     public boolean delete(int id) {
         log.info("delete {}", id);
         return repository.remove(id) != null;
-
     }
 
     @Override
@@ -48,19 +46,16 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        List<User> users = (List<User>) repository.values();
-        users.sort(Comparator.comparing(AbstractNamedEntity::getName));
-        return users;
+        return repository.values().stream()
+                .sorted(Comparator.comparing(AbstractNamedEntity::getName))
+                .collect(Collectors.toList());
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        for (User user : repository.values()) {
-            if (user.getEmail().equals(email)) {
-                return user;
-            }
-        }
-        return null;
+        List<User> users = repository.values().stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
+        return users.get(0);
+        //Немного кривое решение, но я подумал, раз email уникален, то можно сделать так.
     }
 }
