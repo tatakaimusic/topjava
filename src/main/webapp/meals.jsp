@@ -24,11 +24,11 @@
     <form method="get" action="meals">
         <input type="hidden" name="action" value="sort">
         <dl>
-            <dt>From date (inclusive)</dt>
+            <dt>From time (inclusive)</dt>
             <dd><input type="time" name="fromTime"></dd>
         </dl>
         <dl>
-            <dt>To date (inclusive)</dt>
+            <dt>To time (inclusive)</dt>
             <dd><input type="time" name="toTime"></dd>
         </dl>
         <button type="submit">Filter</button>

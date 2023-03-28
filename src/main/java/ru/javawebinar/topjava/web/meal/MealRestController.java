@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 
+import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.*;
@@ -52,5 +53,10 @@ public class MealRestController {
     public List<MealTo> getAll() {
         log.info("get all where userId={}", userId);
         return MealsUtil.getTos(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
+    }
+
+    public List<MealTo> getAllFiltered(LocalTime startTime, LocalTime finishTime) {
+        log.info("get all filtered where userId={}", userId);
+        return MealsUtil.getFilteredTos(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay(), startTime, finishTime);
     }
 }

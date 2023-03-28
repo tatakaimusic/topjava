@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -73,23 +74,15 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
-//            case "sort":
-//                log.info("get all sorted by time");
-//                String fromTimeString = request.getParameter("fromDate");
-//                String toTimeString = request.getParameter("toDate");
-//                if (fromTimeString == null || toTimeString == null) {
-//                    response.sendRedirect("meals");
-//                    return;
-//                }
-//                LocalTime fromTime = LocalTime.parse(fromTimeString);
-//                LocalTime toTime = LocalTime.parse(toTimeString);
-//                if (fromTime.isAfter(toTime)) {
-//                    return;
-//                }
-//                request.setAttribute("meals",
-//                        MealsUtil.getFilteredTos(controller.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY, fromTime, toTime));
-//                request.getRequestDispatcher("/meals.jsp").forward(request, response);
-//                break;
+            case "sort":
+                log.info("get all sorted by time");
+                String fromTimeString = request.getParameter("fromTime");
+                String toTimeString = request.getParameter("toTime");
+                LocalTime fromTime = fromTimeString.equals("") ? LocalTime.MIN : LocalTime.parse(fromTimeString);
+                LocalTime toTime = toTimeString.equals("") ? LocalTime.MAX : LocalTime.parse(toTimeString);
+                request.setAttribute("meals", controller.getAllFiltered(fromTime, toTime));
+                request.getRequestDispatcher("meals.jsp").forward(request, response);
+                break;
             case "all":
             default:
                 log.info("getAll");

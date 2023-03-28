@@ -2,10 +2,15 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 import java.util.Arrays;
 
 public class SpringMain {
@@ -15,11 +20,10 @@ public class SpringMain {
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
-            System.out.println(adminUserController.getAll());
-            System.out.println(adminUserController.getByMail("email@mail.ru"));
-//            MealRestController mealRestController = appCtx.getBean(MealRestController.class);
-//            mealRestController.create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500), 1);
-//            System.out.println(mealRestController.get(1, 1).getId());
+
+            MealRestController mealRestController = appCtx.getBean(MealRestController.class);
+            mealRestController.create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
+            System.out.println(mealRestController.getAllFiltered(LocalTime.of(15, 0), null));
         }
     }
 }
