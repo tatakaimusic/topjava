@@ -25,19 +25,19 @@
         <input type="hidden" name="action" value="filter">
         <dl>
             <dt>From time (inclusive)</dt>
-            <dd><input type="time" name="fromTime" value="<%=request.getParameter("fromTime")%>"></dd>
+            <dd><input type="time" name="fromTime" value="${param['fromTime']}"></dd>
         </dl>
         <dl>
             <dt>To time (inclusive)</dt>
-            <dd><input type="time" name="toTime" value="<%=request.getParameter("toTime")%>"></dd>
+            <dd><input type="time" name="toTime" value="${param['toTime']}"></dd>
         </dl>
         <dl>
             <dt>From date (inclusive)</dt>
-            <dd><input type="date" name="fromDate" value="<%=request.getParameter("fromDate")%>"></dd>
+            <dd><input type="date" name="fromDate" value="${param['fromDate']}"></dd>
         </dl>
         <dl>
             <dt>To date (inclusive)</dt>
-            <dd><input type="date" name="toDate" value="<%=request.getParameter("toDate")%>"></dd>
+            <dd><input type="date" name="toDate" value="${param['toDate']}"></dd>
         </dl>
         <button type="submit">Filter</button>
         <form action="meals">
