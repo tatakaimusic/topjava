@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
@@ -17,7 +16,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
@@ -89,7 +87,6 @@ public class MealServlet extends HttpServlet {
                 String fromDateString = request.getParameter("fromDate");
                 String toDateString = request.getParameter("toDate");
 
-                List<MealTo> meals = controller.getAll();
                 LocalDate fromDate = fromDateString.isEmpty() ? null : LocalDate.parse(fromDateString);
                 LocalDate toDate = toDateString.isEmpty() ? null : LocalDate.parse(toDateString);
                 request.setAttribute("meals", controller.getAllFiltered(fromDate, toDate, fromTime, toTime));

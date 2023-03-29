@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,7 +29,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        Map<Integer, Meal> meals = repository.computeIfAbsent(userId, initialCapacity -> new ConcurrentHashMap<>());
+        Map<Integer, Meal> meals = repository.computeIfAbsent(userId, key -> new ConcurrentHashMap<>());
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             meals.put(meal.getId(), meal);
@@ -55,12 +54,16 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public List<Meal> getAll(int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
-        return meals == null ? Collections.emptyList() : meals.values().stream().sorted(Comparator.comparing(Meal::getDate).thenComparing(Meal::getTime)).collect(Collectors.toList());
+        return meals == null
+                ? Collections.emptyList()
+                : meals.values().stream()
+                .sorted((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime()))
+                .collect(Collectors.toList());
     }
 
+    @Override
     public List<Meal> getAllFilterByDate(int userId, LocalDate fromDate, LocalDate toDate) {
-        Map<Integer, Meal> meals = repository.get(userId);
-        return meals.values().stream().filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), fromDate, toDate)).collect(Collectors.toList());
+        return getAll(userId).stream().filter(meal -> DateTimeUtil.isBetweenClose(meal.getDate(), fromDate, toDate)).collect(Collectors.toList());
     }
 }
 
