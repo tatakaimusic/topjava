@@ -22,26 +22,26 @@
     <hr/>
     <h2>Meals</h2>
     <form method="get" action="meals">
-        <input type="hidden" name="action" value="sort">
+        <input type="hidden" name="action" value="filter">
         <dl>
             <dt>From time (inclusive)</dt>
-            <dd><input type="time" name="fromTime"></dd>
+            <dd><input type="time" name="fromTime" value="<%=request.getParameter("fromTime")%>"></dd>
         </dl>
         <dl>
             <dt>To time (inclusive)</dt>
-            <dd><input type="time" name="toTime"></dd>
+            <dd><input type="time" name="toTime" value="<%=request.getParameter("toTime")%>"></dd>
         </dl>
         <dl>
             <dt>From date (inclusive)</dt>
-            <dd><input type="date" name="fromDate"></dd>
+            <dd><input type="date" name="fromDate" value="<%=request.getParameter("fromDate")%>"></dd>
         </dl>
         <dl>
             <dt>To date (inclusive)</dt>
-            <dd><input type="date" name="toDate"></dd>
+            <dd><input type="date" name="toDate" value="<%=request.getParameter("toDate")%>"></dd>
         </dl>
         <button type="submit">Filter</button>
         <form action="meals">
-            <button type="reset">Cancel</button>
+            <button type="button" onclick="window.history.back()">Cancel</button>
         </form>
     </form>
     <a href="meals?action=create">Add Meal</a>

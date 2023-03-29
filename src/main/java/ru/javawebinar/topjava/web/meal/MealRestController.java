@@ -20,8 +20,6 @@ import static ru.javawebinar.topjava.util.ValidationUtil.*;
 public class MealRestController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final int userId = SecurityUtil.authUserId();
-
     private final MealService service;
 
     public MealRestController(MealService service) {
@@ -29,35 +27,38 @@ public class MealRestController {
     }
 
     public Meal create(Meal meal) {
-        log.info("create {} with userId={}", meal, userId);
+        log.info("create {} with userId={}", meal, SecurityUtil.authUserId());
         checkNew(meal);
-        return service.create(meal, userId);
+        return service.create(meal, SecurityUtil.authUserId());
     }
 
     public void update(Meal meal, int id) {
-        log.info("update {} with id={} where userId={}", meal, id, userId);
+        log.info("update {} with id={} where userId={}", meal, id, SecurityUtil.authUserId());
         assureIdConsistent(meal, id);
-        service.update(meal, userId);
+        service.update(meal, SecurityUtil.authUserId());
     }
 
     public void delete(int id) {
-        log.info("delete {} where userId={}", id, userId);
-        checkNotFound(service.get(id, userId), "Meal not found");
-        service.delete(id, userId);
+        log.info("delete {} where userId={}", id, SecurityUtil.authUserId());
+        service.delete(id, SecurityUtil.authUserId());
     }
 
     public Meal get(int id) {
-        log.info("get {} where userId={}", id, userId);
-        return checkNotFound(service.get(id, userId), "Meal not found");
+        log.info("get {} where userId={}", id, SecurityUtil.authUserId());
+        return service.get(id, SecurityUtil.authUserId());
     }
 
     public List<MealTo> getAll() {
-        log.info("get all where userId={}", userId);
-        return MealsUtil.getTos(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
+        log.info("get all where userId={}", SecurityUtil.authUserId());
+        return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay());
     }
 
     public List<MealTo> getAllFiltered(LocalDate fromDate, LocalDate toDate, LocalTime fromTime, LocalTime toTime) {
-        log.info("get all filtered where userId={}", userId);
-        return MealsUtil.getFilteredTos(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay(), fromDate, toDate, fromTime, toTime);
+        log.info("get all filtered where userId={}", SecurityUtil.authUserId());
+        fromDate = fromDate == null ? LocalDate.MIN : fromDate;
+        toDate = toDate == null ? LocalDate.MAX : toDate;
+        fromTime = fromTime == null ? LocalTime.MIN : fromTime;
+        toTime = toTime == null ? LocalTime.MAX : toTime;
+        return MealsUtil.getFilteredTos(service.getAllFilteredByDate(SecurityUtil.authUserId(), fromDate, toDate), SecurityUtil.authUserCaloriesPerDay(), fromTime, toTime);
     }
 }

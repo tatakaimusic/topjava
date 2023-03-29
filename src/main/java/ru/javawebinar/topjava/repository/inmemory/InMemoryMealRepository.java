@@ -3,10 +3,13 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +24,8 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> save(meal, SecurityUtil.authUserId()));
+        MealsUtil.meals.forEach(meal -> save(meal, 1));
+        save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Второй пользователь", 2100), 2);
     }
 
     @Override
@@ -39,22 +43,24 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int id, int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
-        return meals.remove(id) != null;
+        return meals != null && meals.remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
-        return meals.get(id);
+        return meals == null ? null : meals.get(id);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
-        if (meals.isEmpty()) {
-            throw new NotFoundException("List is empty");
-        }
-        return meals.values().stream().sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toList());
+        return meals == null ? Collections.emptyList() : meals.values().stream().sorted(Comparator.comparing(Meal::getDate).thenComparing(Meal::getTime)).collect(Collectors.toList());
+    }
+
+    public List<Meal> getAllFilterByDate(int userId, LocalDate fromDate, LocalDate toDate) {
+        Map<Integer, Meal> meals = repository.get(userId);
+        return meals.values().stream().filter(meal -> DateTimeUtil.isBetweenHalfOpen(meal.getDate(), fromDate, toDate)).collect(Collectors.toList());
     }
 }
 

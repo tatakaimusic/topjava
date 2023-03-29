@@ -25,10 +25,11 @@ public class MealServlet extends HttpServlet {
 
     private MealRestController controller;
 
-    private final ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+    private ConfigurableApplicationContext appCtx;
 
     @Override
     public void init() {
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         controller = appCtx.getBean(MealRestController.class);
     }
 
@@ -77,20 +78,20 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
-            case "sort":
+            case "filter":
                 log.info("get all sorted by time");
                 String fromTimeString = request.getParameter("fromTime");
                 String toTimeString = request.getParameter("toTime");
 
-                LocalTime fromTime = fromTimeString.equals("") ? LocalTime.MIN : LocalTime.parse(fromTimeString);
-                LocalTime toTime = toTimeString.equals("") ? LocalTime.MAX : LocalTime.parse(toTimeString);
+                LocalTime fromTime = fromTimeString.isEmpty() ? null : LocalTime.parse(fromTimeString);
+                LocalTime toTime = toTimeString.isEmpty() ? null : LocalTime.parse(toTimeString);
 
                 String fromDateString = request.getParameter("fromDate");
                 String toDateString = request.getParameter("toDate");
 
                 List<MealTo> meals = controller.getAll();
-                LocalDate fromDate = fromDateString.equals("") ? meals.get(0).getDateTime().toLocalDate() : LocalDate.parse(fromDateString);
-                LocalDate toDate = toDateString.equals("") ? meals.get(meals.size() - 1).getDateTime().toLocalDate() : LocalDate.parse(toDateString);
+                LocalDate fromDate = fromDateString.isEmpty() ? null : LocalDate.parse(fromDateString);
+                LocalDate toDate = toDateString.isEmpty() ? null : LocalDate.parse(toDateString);
                 request.setAttribute("meals", controller.getAllFiltered(fromDate, toDate, fromTime, toTime));
                 request.getRequestDispatcher("meals.jsp").forward(request, response);
                 break;
