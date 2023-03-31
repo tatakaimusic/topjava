@@ -59,6 +59,8 @@ public class MealRestController {
         toDate = toDate == null ? LocalDate.MAX : toDate;
         fromTime = fromTime == null ? LocalTime.MIN : fromTime;
         toTime = toTime == null ? LocalTime.MAX : toTime;
-        return MealsUtil.getFilteredTos(service.getAllFilteredByDate(SecurityUtil.getAuthUserId(), fromDate, toDate), SecurityUtil.authUserCaloriesPerDay(), fromTime, toTime);
+        return MealsUtil.getFilteredTos(service.getAllFilteredByDate(
+                        SecurityUtil.getAuthUserId(), fromDate, toDate),
+                SecurityUtil.authUserCaloriesPerDay(), fromTime, toTime);
     }
 }
