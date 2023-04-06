@@ -36,6 +36,8 @@ public class MealTestData {
 
     public static final Meal NOT_FOUND_MEAL = new Meal(1, DATE_TIME_NEW, NEW_DESCRIPTION, CALORIES);
 
+    public static final Meal ALIEN_MEAL = new Meal(100006, DATE_TIME_NEW, NEW_DESCRIPTION, CALORIES);
+
     public static final List<Meal> ALL_MEALS = List.of(
             new Meal(100005, LocalDateTime.of(2023, 4, 9, 20, 0), "user meal 3", 2000),
             new Meal(100004, LocalDateTime.of(2023, 4, 7, 15, 0), "user meal 2", 2000),

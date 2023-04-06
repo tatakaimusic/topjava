@@ -80,6 +80,11 @@ public class MealServiceTest {
     }
 
     @Test
+    public void updateAlienMeal() {
+        Assert.assertThrows(NotFoundException.class, () -> mealService.update(ALIEN_MEAL, USER_ID));
+    }
+
+    @Test
     public void create() {
         Meal created = mealService.create(NEW_MEAL, USER_ID);
         Integer newId = created.getId();

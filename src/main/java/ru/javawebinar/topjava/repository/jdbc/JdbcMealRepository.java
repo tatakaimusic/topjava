@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.Util;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -49,8 +50,10 @@ public class JdbcMealRepository implements MealRepository {
         if (meal.isNew()) {
             Number key = insertMeal.executeAndReturnKey(map);
             meal.setId(key.intValue());
+        } else if (get(meal.getId(), userId) == null) {
+            throw new NotFoundException("Alien meal");
         } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET user_id=:user_id, date_time=:date_time," +
+                "UPDATE meals SET date_time=:date_time," +
                         " description=:description, calories=:calories WHERE id=:id", map) == 0) {
             return null;
         }
