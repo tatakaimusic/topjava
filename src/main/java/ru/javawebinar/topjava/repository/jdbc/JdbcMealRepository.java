@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -10,10 +11,8 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.Util;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -51,7 +50,7 @@ public class JdbcMealRepository implements MealRepository {
             Number key = insertMeal.executeAndReturnKey(map);
             meal.setId(key.intValue());
         } else if (get(meal.getId(), userId) == null) {
-            throw new NotFoundException("Alien meal");
+            return null;
         } else if (namedParameterJdbcTemplate.update(
                 "UPDATE meals SET date_time=:date_time," +
                         " description=:description, calories=:calories WHERE id=:id", map) == 0) {
@@ -67,7 +66,8 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE (id = ?) AND (user_id = ?)", new Object[]{id, userId}, ROW_MAPPER).stream().findAny().orElse(null);
+        List<Meal> meals = jdbcTemplate.query("SELECT * FROM meals WHERE (id = ?) AND (user_id = ?)", ROW_MAPPER, id, userId);
+        return DataAccessUtils.singleResult(meals);
     }
 
     @Override
@@ -81,9 +81,8 @@ public class JdbcMealRepository implements MealRepository {
     }
 
     private List<Meal> filterByPredicate(int userId, Predicate<Meal> filter) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id = ?", new Object[]{userId}, ROW_MAPPER)
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id = ? ORDER BY date_time DESC ", ROW_MAPPER, userId)
                 .stream().filter(filter)
-                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 }

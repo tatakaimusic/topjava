@@ -10,12 +10,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
+
 
 import java.util.List;
 
 import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -30,12 +33,17 @@ public class MealServiceTest {
     }
 
     @Autowired
-    MealService mealService;
+    private MealService mealService;
 
     @Test
     public void get() {
-        Meal meal = mealService.get(100004, USER_ID);
-        Assert.assertEquals(INCLUSIVE_MEAL, meal);
+        Meal meal = mealService.get(USER_MEAL_2.getId(), USER_ID);
+        Assert.assertEquals(USER_MEAL_2.toString(), meal.toString());
+    }
+
+    @Test
+    public void getAlienMeal() {
+        Assert.assertThrows(NotFoundException.class, () -> mealService.get(ADMIN_MEAL.getId(), USER_ID));
     }
 
     @Test
@@ -46,7 +54,7 @@ public class MealServiceTest {
     @Test
     public void delete() {
         mealService.delete(100004, USER_ID);
-        Assert.assertThrows(NotFoundException.class, () -> mealService.get(100004, USER_ID));
+        Assert.assertThrows(NotFoundException.class, () -> mealService.get(USER_MEAL_2.getId(), USER_ID));
     }
 
     @Test
@@ -55,41 +63,51 @@ public class MealServiceTest {
     }
 
     @Test
+    public void deleteAlienMeal() {
+        Assert.assertThrows(NotFoundException.class, () -> mealService.delete(ADMIN_MEAL.getId(), USER_ID));
+    }
+
+    @Test
     public void getBetweenInclusive() {
         List<Meal> meals = mealService.getBetweenInclusive(START_DATE, END_DATE, USER_ID);
-        Assert.assertEquals(meals.get(0), INCLUSIVE_MEAL);
+        Assert.assertEquals(INCLUSIVE_MEALS, meals);
+    }
 
+    @Test
+    public void getBetweenInclusiveNull() {
+        List<Meal> meals = mealService.getBetweenInclusive(null, null, USER_ID);
+        Assert.assertEquals(ALL_MEALS, meals);
     }
 
     @Test
     public void getAll() {
         List<Meal> meals = mealService.getAll(USER_ID);
         Assert.assertEquals(ALL_MEALS, meals);
-
     }
 
     @Test
     public void update() {
-        mealService.update(UPDATED_MEAL, USER_ID);
-        Assert.assertEquals(UPDATED_MEAL, mealService.get(UPDATED_MEAL.getId(), USER_ID));
+        Meal updated = MealTestData.getUpdatedMeal();
+        mealService.update(updated, USER_ID);
+        Assert.assertEquals(updated.toString(), mealService.get(updated.getId(), USER_ID).toString());
     }
 
     @Test
     public void updateNotExist() {
-        Assert.assertThrows(NotFoundException.class, () -> mealService.update(NOT_FOUND_MEAL, USER_ID));
+        Assert.assertThrows(NotFoundException.class, () -> mealService.update(MealTestData.getNotFoundMeal(), USER_ID));
     }
 
     @Test
     public void updateAlienMeal() {
-        Assert.assertThrows(NotFoundException.class, () -> mealService.update(ALIEN_MEAL, USER_ID));
+        Assert.assertThrows(NotFoundException.class, () -> mealService.update(MealTestData.getAdminMeal(), USER_ID));
     }
 
     @Test
     public void create() {
         Meal created = mealService.create(NEW_MEAL, USER_ID);
         Integer newId = created.getId();
-        Assert.assertEquals(NEW_MEAL, created);
-        Assert.assertEquals(NEW_MEAL, mealService.get(newId, USER_ID));
+        Assert.assertEquals(NEW_MEAL.toString(), created.toString());
+        Assert.assertEquals(NEW_MEAL.toString(), mealService.get(newId, USER_ID).toString());
     }
 
     @Test
