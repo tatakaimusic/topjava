@@ -71,19 +71,19 @@ public class MealServiceTest {
     @Test
     public void getBetweenInclusive() {
         List<Meal> meals = mealService.getBetweenInclusive(START_DATE, END_DATE, USER_ID);
-        assertMatch(meals, INCLUSIVE_MEALS);
+        assertMatch(meals, filteredUserMeals);
     }
 
     @Test
     public void getBetweenInclusiveNull() {
         List<Meal> meals = mealService.getBetweenInclusive(null, null, USER_ID);
-        assertMatch(meals, ALL_MEALS);
+        assertMatch(meals, allUserMeals);
     }
 
     @Test
     public void getAll() {
         List<Meal> meals = mealService.getAll(USER_ID);
-        assertMatch(meals, ALL_MEALS);
+        assertMatch(meals, allUserMeals);
     }
 
     @Test
@@ -105,10 +105,11 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        Meal newMeal = MealTestData.getNew();
-        Meal created = mealService.create(newMeal, USER_ID);
+        Meal created = mealService.create(getNew(), USER_ID);
+        Meal newMeal = getNew();
         Integer newId = created.getId();
         newMeal.setId(newId);
+        assertMatch(mealService.get(newId, USER_ID), newMeal);
         assertMatch(created, newMeal);
     }
 

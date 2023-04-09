@@ -33,7 +33,7 @@ public class MealTestData {
 
     public static Meal adminMeal = new Meal(START_SEQ + 7, ADMIN_MEAL_DATE_TIME, "admin meal", CALORIES);
 
-    public static List<Meal> ALL_MEALS = List.of(userMeal3, userMeal22, userMeal2, userMeal);
+    public static List<Meal> allUserMeals = List.of(userMeal3, userMeal22, userMeal2, userMeal);
 
     public static Meal notFoundMeal = new Meal(1, USER_MEAL_DATE_TIME, "user meal", CALORIES);
 
@@ -47,7 +47,7 @@ public class MealTestData {
 
     public static final LocalDate END_DATE = LocalDate.of(2023, 4, 8);
 
-    public static final List<Meal> INCLUSIVE_MEALS = List.of(userMeal22, userMeal2);
+    public static List<Meal> filteredUserMeals = List.of(userMeal22, userMeal2);
 
     public static Meal getUpdated() {
         return new Meal(updatedMeal);
@@ -70,6 +70,6 @@ public class MealTestData {
     }
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
-        assertThat(actual).usingFieldByFieldElementComparator().isEqualTo(expected);
+        assertThat(actual).usingRecursiveFieldByFieldElementComparator().isEqualTo(expected);
     }
 }
