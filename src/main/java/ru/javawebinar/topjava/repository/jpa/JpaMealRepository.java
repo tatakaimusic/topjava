@@ -8,7 +8,6 @@ import ru.javawebinar.topjava.repository.MealRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,12 +25,10 @@ public class JpaMealRepository implements MealRepository {
         if (meal.isNew()) {
             em.persist(meal);
             return meal;
-        } else {
-            Query query = em.createQuery("SELECT FROM ");
-            query.setParameter("id", meal.getId());
-            query.setParameter("userId", userId);
-            return (Meal) query;
+        } else if (get(meal.getId(), userId) == null) {
+            return null;
         }
+        return em.merge(meal);
     }
 
     @Override
@@ -46,10 +43,7 @@ public class JpaMealRepository implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         Meal meal = em.find(Meal.class, id);
-        if (meal != null && meal.getUser().getId() == userId) {
-            return meal;
-        }
-        return null;
+        return meal != null && meal.getUser().getId() == userId ? meal : null;
     }
 
     @Override
@@ -61,6 +55,14 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return null;
+        return em.createQuery("" +
+                        "SELECT m FROM Meal m WHERE m.user.id=:userId " +
+                        "AND m.dateTime >: startDateTime " +
+                        "AND m.dateTime <: endDateTime " +
+                        "ORDER BY m.dateTime DESC", Meal.class)
+                .setParameter("userId", userId)
+                .setParameter("startDateTime", startDateTime)
+                .setParameter("endDateTime", endDateTime)
+                .getResultList();
     }
 }
