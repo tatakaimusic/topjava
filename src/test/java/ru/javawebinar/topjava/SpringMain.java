@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava;
 
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.MealTo;
@@ -15,15 +14,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static ru.javawebinar.topjava.Profiles.DATAJPA;
+import static ru.javawebinar.topjava.Profiles.POSTGRES_DB;
 
 public class SpringMain {
     public static void main(String[] args) {
-        ConfigurableApplicationContext appCtx;
-
-//        appCtx.getEnvironment().setActiveProfiles(DATAJPA);
-
-        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
-
+        GenericXmlApplicationContext appCtx = new GenericXmlApplicationContext();
+        appCtx.getEnvironment().setActiveProfiles(POSTGRES_DB, DATAJPA);
+        appCtx.load("spring/spring-app.xml", "spring/spring-db.xml");
+        appCtx.refresh();
 
         System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
         AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
@@ -38,6 +36,8 @@ public class SpringMain {
         filteredMealsWithExcess.forEach(System.out::println);
         System.out.println();
         System.out.println(mealController.getBetween(null, null, null, null));
+
+        appCtx.close();
 
     }
 }

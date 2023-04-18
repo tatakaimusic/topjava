@@ -2,11 +2,9 @@ package ru.javawebinar.topjava.service;
 
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,11 +18,8 @@ public class MealService {
 
     private final MealRepository mealRepository;
 
-    private final UserRepository userRepository;
-
-    public MealService(MealRepository mealRepository, UserRepository userRepository) {
+    public MealService(MealRepository mealRepository) {
         this.mealRepository = mealRepository;
-        this.userRepository = userRepository;
     }
 
     public Meal get(int id, int userId) {
@@ -53,10 +48,7 @@ public class MealService {
         return mealRepository.save(meal, userId);
     }
 
-    @Transactional
     public Meal getWithUser(int id, int userId) {
-        Meal meal = mealRepository.get(id, userId);
-        meal.setUser(userRepository.get(userId));
-        return meal;
+        return mealRepository.getWithUser(id, userId);
     }
 }
