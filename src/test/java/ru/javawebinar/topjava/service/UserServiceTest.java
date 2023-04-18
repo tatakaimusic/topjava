@@ -36,7 +36,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 public abstract class UserServiceTest {
 
     @Autowired
-    private UserService service;
+    protected UserService service;
 
     private static final Logger log = getLogger("result");
 
