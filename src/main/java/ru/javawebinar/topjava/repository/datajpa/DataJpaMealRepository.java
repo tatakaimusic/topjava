@@ -19,6 +19,7 @@ public class DataJpaMealRepository implements MealRepository {
         this.crudUserRepository = crudUserRepository;
     }
 
+    @Transactional
     @Override
     public Meal save(Meal meal, int userId) {
         if (meal.isNew() || get(meal.getId(), userId) != null) {
@@ -35,10 +36,9 @@ public class DataJpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-//        return crudRepository.getById(id, userId);
-        Meal meal = crudMealRepository.findById(id).orElse(null);
-        return meal != null && meal.getUser().getId() == userId ? meal : null;
-//        Сделал двумя способами, не знаю какой лучше
+        return crudMealRepository.findById(id)
+                .filter(meal -> meal.getUser().getId() == userId)
+                .orElse(null);
     }
 
     @Override
@@ -52,7 +52,6 @@ public class DataJpaMealRepository implements MealRepository {
     }
 
     @Override
-    @Transactional
     public Meal getWithUser(int id, int userId) {
         return crudMealRepository.getWithUser(id, userId);
     }
