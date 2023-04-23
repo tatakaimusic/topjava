@@ -19,7 +19,7 @@ public class PostgresJdbcMealRepository extends JdbcMealRepository {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
 
-    protected void addValue(Meal meal, int userId, MapSqlParameterSource map) {
+    protected void addValue(Meal meal, MapSqlParameterSource map) {
         map.addValue("date_time", meal.getDateTime());
     }
 
