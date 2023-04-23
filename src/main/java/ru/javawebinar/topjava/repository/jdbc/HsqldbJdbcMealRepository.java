@@ -22,7 +22,7 @@ public class HsqldbJdbcMealRepository extends JdbcMealRepository {
     }
 
     @Override
-    protected void doSave(Meal meal, int userId, MapSqlParameterSource map) {
+    protected void addValue(Meal meal, int userId, MapSqlParameterSource map) {
         map.addValue("date_time", Timestamp.valueOf(meal.getDateTime()));
     }
 

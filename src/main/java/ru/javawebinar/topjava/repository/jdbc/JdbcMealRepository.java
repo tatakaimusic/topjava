@@ -35,7 +35,7 @@ public abstract class JdbcMealRepository implements MealRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    protected abstract void doSave(Meal meal, int userId, MapSqlParameterSource map);
+    protected abstract void addValue(Meal meal, int userId, MapSqlParameterSource map);
 
     @Override
     public Meal save(Meal meal, int userId) {
@@ -45,7 +45,7 @@ public abstract class JdbcMealRepository implements MealRepository {
                 .addValue("calories", meal.getCalories())
                 .addValue("user_id", userId);
 
-        doSave(meal, userId, map);
+        addValue(meal, userId, map);
 
         if (meal.isNew()) {
             Number newId = insertMeal.executeAndReturnKey(map);
